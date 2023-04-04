@@ -1,0 +1,3 @@
+flask
+paho-mqtt
+Adafruit-PCA9685
