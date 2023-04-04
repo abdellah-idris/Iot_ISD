@@ -46,34 +46,6 @@ def on_message(client, userdata,message):
     
     if message.topic == 'shot'+tankID:
         InfraLib.IRBlast(tankID,"LASER")
-    
-    liste_msg=message.payload.decode("utf-8").split()
-    if liste_msg[0]=="TEAM":
-        team=liste_msg[1]
-    elif liste_msg[0]=="QR_CODE":
-        qrcode=liste_msg[1]
-    elif liste_msg[0]=="START_CATCHING":
-        pass
-    elif liste_msg[0]=="FLAG_CATCHED":
-        pass
-    elif liste_msg[0]=="ABORT_CATCHING_EXIT":
-        pass
-    elif message.topic=="tanks/"+tankID+"/shots/in" and  liste_msg[0]=="SHOT":
-        pass
-    elif message.topic=="tanks/"+tankID+"/shots/out" and  liste_msg[0]=="SHOT":
-        pass
-    elif liste_msg[0]=="FRIENDLY_FIRE":
-        pass
-    elif liste_msg[0]=="FLAG_LOST":
-        pass
-    elif liste_msg[0]=="ABORT_CATCHING_SHOT":
-        pass
-    elif liste_msg[0]=="SCAN_SUCCESSFUL":
-        pass
-    elif liste_msg[0]=="SCAN_FAILED":
-        pass
-    elif liste_msg[0]=="WIN "+team:
-        pass
 mqttBroker="192.168.0.102"
 client=mqtt.Client("Dolhamid")
 client.connect(mqttBroker)
@@ -85,12 +57,9 @@ client.subscribe("move"+tankID)
 client.subscribe("servo"+tankID)
 client.subscribe("led"+tankID)
 client.subscribe("picture"+tankID)
+client.subscribe("Dolhamid")
 client.publish("init","INIT "+tankID)
-client.subscribe("tanks/"+tankID+"/init")
-client.subscribe("tanks/"+tankID+"/shots/in")
-client.subscribe("tanks/"+tankID+"/shots/out")
-client.subscribe("tanks/"+tankID+"/qr_code")
-client.subscribe("tanks/"+tankID+"/flag")
+client.publish("Dolhamid","Dolhamid "+tankID)
 client.on_message=on_message
 
 
