@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #333;
+}
+
+div {
+    border: 1px solid #333;
+    margin: 10px;
+    padding: 10px;
+}
+
+p {
+      display: inline-block;
+}
+#servo {
+    background-color: #eee;
+    padding: 10px;
+}
+
+#motor {
+    background-color: #ddd;
+    padding: 10px;
+}
+
+#shoot {
+    background-color: #ccc;
+    padding: 10px;
+}
+
+#picture {
+    background-color: #bbb;
+    padding: 10px;
+}
