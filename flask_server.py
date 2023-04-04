@@ -8,11 +8,13 @@ def index():
 
 @app.route("/servo/<id>")
 def servo(id):
+     client.publish("servo"+tankID,id)
     return redirect('/')
     
 
 @app.route("/move/<id>")
 def move(id):
+    client.publish("move"+tankID,id)
     return redirect('/')
 
 @app.route("/shoot/")
@@ -21,6 +23,7 @@ def shoot():
 
 @app.route("/picture/")
 def picture():
+    client.publish("picture"+tankID,"*")
     return redirect('/')
 
 
