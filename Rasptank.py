@@ -7,7 +7,7 @@ import  uuid
 import InfraLib
 
 SERVO_POSITION = [300, 300, 300, 300, 300]
-tankID  =  uuid.getnode()
+tankID  =  hex(uuid.getnode())
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(50)
@@ -52,6 +52,7 @@ client.connect(mqttBroker)
 client.loop_start()
 
 IR_RECEIVER=15
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(IR_RECEIVER,GPIO.IN)
 GPIO.add_event_detect(IR_RECEIVER,GPIO.FALLING,callback=lambda x: InfraLib.getSignal(IR_RECEIVER,client),bouncetime=100)
 
@@ -63,9 +64,9 @@ GPIO.add_event_detect(LINE_PIN_MIDDLE, GPIO.BOTH, callback=enterFlagArea, bounce
 
 def enterFlagArea(channel1):
 	if GPIO.input(LINE_PIN_MIDLLE) == GPIO.LOW:
-		client.publish('tanks/'+hex(tankID)+'/flag', 'ENTER_FLAG_AREA')
+		client.publish('tanks/'+tankID+'/flag', 'ENTER_FLAG_AREA')
 	else :
-		client.publish('tanks/'+hex(tankID)+'/flag', 'EXIT_FLAG_AREA')
+		client.publish('tanks/'+tankID+'/flag', 'EXIT_FLAG_AREA')
 
 client.subscribe("move"+tankID)
 client.subscribe("servo"+tankID)
@@ -77,4 +78,5 @@ client.publish("Dolhamid","Dolhamid "+tankID)
 client.on_message=on_message
 
 
-client.loop_forever()
+while True:
+     pass
