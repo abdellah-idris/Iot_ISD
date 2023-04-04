@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 from random import randrange,uniform
 
-tankID=""
+tankID=None
 team=""
 qrcode=None
 def on_message(client, userdata,message):
@@ -41,6 +41,8 @@ mqttBroker="192.168.0.102"
 client=mqtt.Client("Dolhamid")
 client.connect(mqttBroker)
 client.subscribe("Dolhamid")
+while tankID==None:
+    pass
 client.subscribe("tanks/"+tankID+"/init")
 client.subscribe("tanks/"+tankID+"/shots/in")
 client.subscribe("tanks/"+tankID+"/shots/out")
