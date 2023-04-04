@@ -5,11 +5,20 @@ from random import randrange,uniform
 tankID=None
 team=""
 qrcode=None
+mqttBroker="192.168.0.102"
+client=mqtt.Client("Dolhamid")
+client.connect(mqttBroker)
+
 def on_message(client, userdata,message):
     global tankID,team,qrcode
     liste_msg=message.payload.decode("utf-8").split()
     if liste_msg[0]=="Dolhamid":
-        tankID=str(message.payload.decode("utf-8"))
+        tankID=message.payload.decode("utf-8")
+        client.subscribe("tanks/"+tankID+"/init")
+        client.subscribe("tanks/"+tankID+"/shots/in")
+        client.subscribe("tanks/"+tankID+"/shots/out")
+        client.subscribe("tanks/"+tankID+"/qr_code")
+        client.subscribe("tanks/"+tankID+"/flag")
     elif liste_msg[0]=="TEAM":
         team=liste_msg[1]
     elif liste_msg[0]=="QR_CODE":
@@ -36,19 +45,9 @@ def on_message(client, userdata,message):
         pass
     elif liste_msg[0]=="WIN "+team:
         pass
-
-mqttBroker="192.168.0.102"
-client=mqtt.Client("Dolhamid")
-client.connect(mqttBroker)
 client.subscribe("Dolhamid")
-while tankID==None:
-    pass
-client.subscribe("tanks/"+tankID+"/init")
-client.subscribe("tanks/"+tankID+"/shots/in")
-client.subscribe("tanks/"+tankID+"/shots/out")
-client.subscribe("tanks/"+tankID+"/qr_code")
-client.subscribe("tanks/"+tankID+"/flag")
 client.on_message=on_message
+
 while True:
 
     msg=input("cmd:")

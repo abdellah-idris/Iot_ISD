@@ -60,19 +60,18 @@ LINE_PIN_MIDDLE = 36
 
 GPIO.setup(LINE_PIN_MIDDLE, GPIO.IN)
 
-GPIO.add_event_detect(LINE_PIN_MIDDLE, GPIO.BOTH, callback=enterFlagArea, bouncetime=100)
-
 def enterFlagArea(channel1):
 	if GPIO.input(LINE_PIN_MIDLLE) == GPIO.LOW:
 		client.publish('tanks/'+tankID+'/flag', 'ENTER_FLAG_AREA')
 	else :
 		client.publish('tanks/'+tankID+'/flag', 'EXIT_FLAG_AREA')
 
+GPIO.add_event_detect(LINE_PIN_MIDDLE, GPIO.BOTH, callback=enterFlagArea, bouncetime=100)
+
 client.subscribe("move"+tankID)
 client.subscribe("servo"+tankID)
 client.subscribe("led"+tankID)
 client.subscribe("picture"+tankID)
-client.subscribe("Dolhamid")
 client.publish("init","INIT "+tankID)
 client.publish("Dolhamid","Dolhamid "+tankID)
 client.on_message=on_message
