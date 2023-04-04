@@ -3,9 +3,11 @@ import time
 import os
 from server.move import *
 import Adafruit_PCA9685
+import  uuid
+import InfraLib
 
 SERVO_POSITION = [300, 300, 300, 300, 300]
-
+tankID  =  uuid.getnode()
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(50)
@@ -19,9 +21,7 @@ pwm.set_pwm_freq(50)
 
 def on_message(client, userdata,message):
     global SERVO_POSITION
-    print("received message:"+message.topic + " "+str(message.payload.decode("utf-8")))
-
-    if message.topic == 'servo':
+    if message.topic == 'servo'+tankID:
         msg = message.payload.decode("utf-8")
         direction = int(msg[-1])
         servo = int(msg[0:2])
@@ -33,29 +33,64 @@ def on_message(client, userdata,message):
                 
         pwm.set_pwm(servo, 0, SERVO_POSITION[servo-11])
             
-    if message.topic == 'move':
+    if message.topic == 'move'+tankID:
         direction = str(message.payload.decode("utf-8")).split('_')
         tmp(direction[0], direction[1])
  
 
-    if message.topic == 'led':
+    if message.topic == 'led'+tankID:
         pass
         
-    if message.topic == 'picture':
+    if message.topic == 'picture'+tankID:
         os.system('raspistill -t 3000 -o image.jpg')
     
-    if message.topic == 'shot':
+    if message.topic == 'shot'+tankID:
+        InfraLib.IRBlast(tankID,"LASER")
+    
+    liste_msg=message.payload.decode("utf-8").split()
+    if liste_msg[0]=="TEAM":
+        team=liste_msg[1]
+    elif liste_msg[0]=="QR_CODE":
+        qrcode=liste_msg[1]
+    elif liste_msg[0]=="START_CATCHING":
         pass
-
-mqttBroker="mqtt.eclipseprojects.io"
-client=mqtt.Client("dola")
+    elif liste_msg[0]=="FLAG_CATCHED":
+        pass
+    elif liste_msg[0]=="ABORT_CATCHING_EXIT":
+        pass
+    elif message.topic=="tanks/"+tankID+"/shots/in" and  liste_msg[0]=="SHOT":
+        pass
+    elif message.topic=="tanks/"+tankID+"/shots/out" and  liste_msg[0]=="SHOT":
+        pass
+    elif liste_msg[0]=="FRIENDLY_FIRE":
+        pass
+    elif liste_msg[0]=="FLAG_LOST":
+        pass
+    elif liste_msg[0]=="ABORT_CATCHING_SHOT":
+        pass
+    elif liste_msg[0]=="SCAN_SUCCESSFUL":
+        pass
+    elif liste_msg[0]=="SCAN_FAILED":
+        pass
+    elif liste_msg[0]=="WIN "+team:
+        pass
+mqttBroker="192.168.0.102"
+client=mqtt.Client("Dolhamid")
 client.connect(mqttBroker)
 client.loop_start()
-client.subscribe("move")
-client.subscribe("servo")
-client.subscribe("led")
-client.subscribe("picture")
-
+IR_RECEIVER=15
+GPIO.setup(IR_RECEIVER,GPIO.IN)
+GPIO.add_event_detect(IR_RECEIVER,GPIO.FALLING,callback=lambda x: InfraLib.getSignal(IR_RECEIVER,client),bouncetime=100)
+client.subscribe("move"+tankID)
+client.subscribe("servo"+tankID)
+client.subscribe("led"+tankID)
+client.subscribe("picture"+tankID)
+client.publish("init","INIT "+tankID)
+client.subscribe("tanks/"+tankID+"/init")
+client.subscribe("tanks/"+tankID+"/shots/in")
+client.subscribe("tanks/"+tankID+"/shots/out")
+client.subscribe("tanks/"+tankID+"/qr_code")
+client.subscribe("tanks/"+tankID+"/flag")
 client.on_message=on_message
 
 
