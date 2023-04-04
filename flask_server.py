@@ -22,7 +22,7 @@ def index():
 
 @app.route("/servo/<id>")
 def servo(id):
-     client.publish("servo"+tankID,id)
+    client.publish("servo"+tankID,id)
     return redirect('/')
     
 

@@ -95,4 +95,5 @@ client.subscribe("tanks/"+str(tankID)+"/flag")
 client.on_message=on_message
 
 
-client.loop_forever()
+while True:
+    pass
