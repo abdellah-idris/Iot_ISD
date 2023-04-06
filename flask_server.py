@@ -1,4 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for
+import paho.mqtt.client as mqtt
+import time
+from random import randrange,uniform
+
+tankID=""
+def on_message(client, userdata,message):
+    global tankID
+    tankID=str(message.payload.decode("utf-8"))
+
+mqttBroker="192.168.0.102"
+client=mqtt.Client("Dolhamid")
+client.connect(mqttBroker)
+client.subscribe("Dolhamid")
+client.on_message=on_message
 
 app = Flask(__name__)
 
@@ -8,7 +22,7 @@ def index():
 
 @app.route("/servo/<id>")
 def servo(id):
-     client.publish("servo"+tankID,id)
+    client.publish("servo"+tankID,id)
     return redirect('/')
     
 
@@ -19,6 +33,7 @@ def move(id):
 
 @app.route("/shoot/")
 def shoot():
+    client.publish("shoot"+tankID,'*')
     return redirect('/')
 
 @app.route("/picture/")
