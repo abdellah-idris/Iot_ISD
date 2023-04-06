@@ -2,32 +2,26 @@ import paho.mqtt.client as mqtt
 import time
 from random import randrange, uniform
 
-tankID = None
-team = "BLUE"
-qrcode = None
 
-mqttBroker = "192.168.0.102"
-client = mqtt.Client("Dolhamid")
-client.connect(mqttBroker)
+tankID=None
+team=""
+qrcode=None
 
-
-def on_message(client, userdata, message):
-    global tankID, team, qrcode
-    liste_msg = message.payload.decode("utf-8").split()
-
-    if liste_msg[0] == "Dolhamid":
-        tankID = message.payload.decode("utf-8")
-        client.subscribe("tanks/" + tankID + "/init")
-        client.subscribe("tanks/" + tankID + "/shots/in")
-        client.subscribe("tanks/" + tankID + "/shots/out")
-        client.subscribe("tanks/" + tankID + "/qr_code")
-        client.subscribe("tanks/" + tankID + "/flag")
-
-    elif liste_msg[0] == "TEAM":
-        team = liste_msg[1]
-    elif liste_msg[0] == "QR_CODE":
-        qrcode = liste_msg[1]
-    elif liste_msg[0] == "START_CATCHING":
+def on_message(client, userdata,message):
+    global tankID,team,qrcode
+    liste_msg=message.payload.decode("utf-8").split()
+    if liste_msg[0]=="Dolhamid":
+        tankID=liste_msg[1]
+        client.subscribe("tanks/"+tankID+"/init")
+        client.subscribe("tanks/"+tankID+"/shots/in")
+        client.subscribe("tanks/"+tankID+"/shots/out")
+        client.subscribe("tanks/"+tankID+"/qr_code")
+        client.subscribe("tanks/"+tankID+"/flag")
+    elif liste_msg[0]=="TEAM":
+        team=liste_msg[1]
+    elif liste_msg[0]=="QR_CODE":
+        qrcode=liste_msg[1]
+    elif liste_msg[0]=="START_CATCHING":
         pass
     elif liste_msg[0] == "FLAG_CATCHED":
         pass
@@ -50,9 +44,13 @@ def on_message(client, userdata, message):
     elif liste_msg[0] == "WIN " + team:
         pass
 
+mqttBroker="192.168.0.102"
+client=mqtt.Client("Dolhamid_client")
+client.connect(mqttBroker)
+client.loop_start()
+client.subscribe("Dolhamid_")
+client.on_message=on_message
 
-client.subscribe("Dolhamid")
-client.on_message = on_message
 
 while True:
 

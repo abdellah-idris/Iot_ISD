@@ -47,7 +47,7 @@ def on_message(client, userdata,message):
     if message.topic == 'shot'+tankID:
         InfraLib.IRBlast(tankID,"LASER")
 mqttBroker="192.168.0.102"
-client=mqtt.Client("Dolhamid")
+client=mqtt.Client("Dolhamid_server")
 client.connect(mqttBroker)
 client.loop_start()
 
@@ -73,7 +73,7 @@ client.subscribe("servo"+tankID)
 client.subscribe("led"+tankID)
 client.subscribe("picture"+tankID)
 client.publish("init","INIT "+tankID)
-client.publish("Dolhamid","Dolhamid "+tankID)
+client.publish("Dolhamid_","Dolhamid "+tankID)
 client.on_message=on_message
 
 
