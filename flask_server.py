@@ -7,15 +7,6 @@ team = ""
 qrcode = ""
 affichage = ""
 
-mqttBroker = "192.168.0.102"
-client = mqtt.Client("Dolhamid_server")
-
-try:
-    client.connect(mqttBroker)
-except TimeoutError:
-    raise TimeoutError("Timeout")
-
-
 
 def on_message(client, userdata, message):
     global tankID, team, qrcode, affichage
@@ -55,6 +46,14 @@ def on_message(client, userdata, message):
     elif liste_msg[0] == "WIN " + team:
         affichage = "WIN " + team
 
+
+mqttBroker = "192.168.0.102"
+client = mqtt.Client("Dolhamid_server")
+
+try:
+    client.connect(mqttBroker)
+except TimeoutError:
+    raise TimeoutError("Timeout")
 
 client.loop_start()
 client.subscribe("Dolhamid_")
