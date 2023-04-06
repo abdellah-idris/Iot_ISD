@@ -6,6 +6,8 @@ import Adafruit_PCA9685
 import  uuid
 import InfraLib
 
+setup()
+
 SERVO_POSITION = [300, 300, 300, 300, 300]
 tankID  =  hex(uuid.getnode())
 
@@ -51,12 +53,11 @@ client=mqtt.Client("Dolhamid_server")
 client.connect(mqttBroker)
 client.loop_start()
 
-IR_RECEIVER=15
-GPIO.setmode(GPIO.BOARD)
+IR_RECEIVER=22
 GPIO.setup(IR_RECEIVER,GPIO.IN)
 GPIO.add_event_detect(IR_RECEIVER,GPIO.FALLING,callback=lambda x: InfraLib.getSignal(IR_RECEIVER,client),bouncetime=100)
 
-LINE_PIN_MIDDLE = 36
+LINE_PIN_MIDDLE = 16
 
 GPIO.setup(LINE_PIN_MIDDLE, GPIO.IN)
 
