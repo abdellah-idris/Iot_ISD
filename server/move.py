@@ -139,7 +139,7 @@ def destroy():
 
 def tmp(direction, turn):
 	try:
-		setup()
+
 		move(100, direction, turn, 0.8)
 		time.sleep(1.3)
 		motorStop()

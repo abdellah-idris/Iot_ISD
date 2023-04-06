@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 import paho.mqtt.client as mqtt
+from flask_mqtt import Mqtt
 
 
 tankID = None
@@ -7,22 +8,30 @@ team = ""
 qrcode = ""
 affichage = ""
 
-mqttBroker = "192.168.0.102"
-client = mqtt.Client("Dolhamid_server")
+app = Flask(__name__)
 
-try:
-    client.connect(mqttBroker)
-except TimeoutError:
-    raise TimeoutError("Timeout")
+app.config['MQTT_BROKER_URL'] = '192.168.0.100'  # use the free broker from HIVEMQ
 
+mqtt = Mqtt()
+mqtt.init_app(app)
 
 
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    print('connected to mqtt broker!')
+    mqtt.subscribe("Dolhamid_")
+
+
+
+@mqtt.on_message()
 def on_message(client, userdata, message):
+    print('on_message')
     global tankID, team, qrcode, affichage
     liste_msg = message.payload.decode("utf-8").split()
 
     if liste_msg[0] == "Dolhamid":
         tankID = liste_msg[1]
+        print(tankID)
         client.subscribe("tanks/" + tankID + "/init")
         client.subscribe("tanks/" + tankID + "/shots/in")
         client.subscribe("tanks/" + tankID + "/shots/out")
@@ -56,11 +65,6 @@ def on_message(client, userdata, message):
         affichage = "WIN " + team
 
 
-client.loop_start()
-client.subscribe("Dolhamid_")
-client.on_message = on_message
-
-app = Flask(__name__)
 
 
 @app.route("/")
@@ -70,10 +74,11 @@ def index():
 
 @app.route("/servo/<id>")
 def servo(id):
+    print(tankID)
     try:
-        client.publish("servo" + tankID, id)
+        mqtt.publish("servo" + tankID, id)
     except:
-        print("Timeout")
+        print("servo Timeout")
 
     return redirect('/')
 
@@ -81,7 +86,7 @@ def servo(id):
 @app.route("/move/<id>")
 def move(id):
     try:
-        client.publish("move" + tankID, id)
+        mqtt.publish("move" + tankID, id)
     except:
         print("Timeout")
 
@@ -91,7 +96,7 @@ def move(id):
 @app.route("/shoot/")
 def shoot():
     try:
-        client.publish("shoot" + tankID, '*')
+        mqtt.publish("shoot" + tankID, '*')
     except:
         print("Timeout")
 
@@ -101,7 +106,7 @@ def shoot():
 @app.route("/picture/")
 def picture():
     try:
-        client.publish("picture" + tankID, "*")
+        mqtt.publish("picture" + tankID, "*")
     except:
         print("Timeout")
 
