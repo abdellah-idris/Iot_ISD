@@ -16,6 +16,7 @@ except TimeoutError:
     raise TimeoutError("Timeout")
 
 
+
 def on_message(client, userdata, message):
     global tankID, team, qrcode, affichage
     liste_msg = message.payload.decode("utf-8").split()
@@ -55,7 +56,8 @@ def on_message(client, userdata, message):
         affichage = "WIN " + team
 
 
-client.subscribe("Dolhamid")
+client.loop_start()
+client.subscribe("Dolhamid_")
 client.on_message = on_message
 
 app = Flask(__name__)
