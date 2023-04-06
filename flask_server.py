@@ -2,13 +2,13 @@ from flask import Flask, render_template, redirect, url_for
 import paho.mqtt.client as mqtt
 
 
-tankID = ""
+tankID = None
 team = ""
 qrcode = ""
 affichage = ""
 
 mqttBroker = "192.168.0.102"
-client = mqtt.Client("Dolhamid")
+client = mqtt.Client("Dolhamid_server")
 
 try:
     client.connect(mqttBroker)
@@ -21,7 +21,7 @@ def on_message(client, userdata, message):
     liste_msg = message.payload.decode("utf-8").split()
 
     if liste_msg[0] == "Dolhamid":
-        tankID = message.payload.decode("utf-8")
+        tankID = liste_msg[1]
         client.subscribe("tanks/" + tankID + "/init")
         client.subscribe("tanks/" + tankID + "/shots/in")
         client.subscribe("tanks/" + tankID + "/shots/out")
