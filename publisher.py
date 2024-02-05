@@ -44,7 +44,7 @@ def on_message(client, userdata,message):
     elif liste_msg[0] == "WIN " + team:
         pass
 
-mqttBroker="192.168.0.100"
+mqttBroker="mqtt.flespi.io"
 client=mqtt.Client("Dolhamid_client")
 client.connect(mqttBroker)
 client.loop_start()

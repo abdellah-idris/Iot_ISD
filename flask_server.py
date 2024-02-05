@@ -10,7 +10,7 @@ affichage = ""
 
 app = Flask(__name__)
 
-app.config['MQTT_BROKER_URL'] = '192.168.0.100'  # use the free broker from HIVEMQ
+app.config['MQTT_BROKER_URL'] = 'mqtt.flespi.io'  # use the free broker from HIVEMQ
 
 mqtt = Mqtt()
 mqtt.init_app(app)
@@ -115,4 +115,4 @@ def picture():
 
 # run the app
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)

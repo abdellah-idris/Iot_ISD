@@ -51,7 +51,7 @@ def on_message(client, userdata, message):
         InfraLib.IRBlast(tankID, "LASER")
 
 
-mqttBroker = "192.168.0.102"
+mqttBroker = "mqtt.flespi.io"
 client = mqtt.Client("Dolhamid_server")
 client.connect(mqttBroker)
 client.loop_start()
